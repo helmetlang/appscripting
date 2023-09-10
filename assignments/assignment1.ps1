@@ -102,6 +102,7 @@ $files3 = Get-ChildItem -Path "C:\Windows\System32\DriverStore" -File -Recurse |
 $numberOfFiles = $files3.Count
 # print statement
 Write-Host "Number of '.sys' files larger than 500 KB found: $numberOfFiles"
+# found 100 files and not 51
 
 
 ### 4.  Create a variable called $files4 and assign it the output all ".sys" files 
@@ -115,7 +116,7 @@ $files4 = Get-ChildItem -Path "C:\Windows\System32\DriverStore" -File -Recurse |
 $numberOfFiles = $files4.Count
 # print statement
 Write-Host "Number of '.sys' files starting with 's' and larger than 500 KB found: $numberOfFiles"
-
+# found 2 files like it should have
 
 ### 5. Now that the two files we were looking for are found and stored in $files4, 
 ## let's export them out to CSV file named findings.csv
@@ -135,7 +136,5 @@ $connection = Test-NetConnection -ComputerName ung.edu -Port 443 # -TimeoutMilli
 # print the $connection variable
 $connection
 
-# after I tried to test connection I got hit with attempting TCP connect waiting for response, so then I added a condition to terminate if
-# no response after about 30 seconds
-
+# after I tried to test connection I got hit with attempting TCP connect waiting for response.
 #----------------------------------------------------------[Complete]-------------------------------------------------------------
