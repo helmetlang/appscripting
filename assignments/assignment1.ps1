@@ -75,7 +75,7 @@ write-host $itemSum
 $files1 = Get-ChildItem -Path "C:\Windows\System32\DriverStore" -File -Recurse
 $numberOfFiles = $files1.Count
 Write-Host "Number of files found: $numberOfFiles"
-# returns 2679 files and not 1644 items
+
 
 
 ### 2. Create a variable called $files2 and assign it the output all ".sys" files 
@@ -88,7 +88,7 @@ $files2 = Get-ChildItem -Path "C:\Windows\System32\DriverStore" -File -Recurse |
 $numberOfFiles = $files2.Count
 # print statement 
 Write-Host "Number of .sys files found: $numberOfFiles"
-# found 434 files and not 329
+
 
 ### 3. Create a variable called $files3 and assign it the output all ".sys" files 
 ### larger than 500 KB (Length > 500KB) in 
@@ -102,7 +102,7 @@ $files3 = Get-ChildItem -Path "C:\Windows\System32\DriverStore" -File -Recurse |
 $numberOfFiles = $files3.Count
 # print statement
 Write-Host "Number of '.sys' files larger than 500 KB found: $numberOfFiles"
-# found 100 files and not 51
+
 
 
 ### 4.  Create a variable called $files4 and assign it the output all ".sys" files 
