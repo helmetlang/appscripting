@@ -18,8 +18,8 @@
     Function bruteforce returns matched password
 .NOTES
     Version:        1.0
-    Author:         <Your Name>
-    Creation Date:  
+    Author:         Jonathan
+    Creation Date: September 18th
 .EXAMPLE
     Assignment2.ps1
 #>
