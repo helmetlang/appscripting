@@ -72,6 +72,7 @@ write-host $itemSum
 ## HINT: You will need to use two additional parameters to recusively retrieve files in sub-directories
 ## HINT: 1644 items will be returned. Use count attribute to verify size (Example: $files1.count)
 
+# not working at 1644
 $files1 = Get-ChildItem -Path "C:\Windows\System32\DriverStore" -File -Recurse
 $numberOfFiles = $files1.Count
 Write-Host "Number of files found: $numberOfFiles"
@@ -82,8 +83,9 @@ Write-Host "Number of files found: $numberOfFiles"
 ### in C:\Windows\System32\driverStore using the cmdlet: Get-ChildItem
 ## HINT: 329 files returned
 
+# not working at 329
 # creates a variable to store the list of ".sys" files
-$files2 = Get-ChildItem -Path "C:\Windows\System32\DriverStore" -File -Recurse | Where-Object { $_.Extension -eq '.sys' }
+$files2 = Get-ChildItem -Path "C:\Windows\System32\DriverStore" -File -Recurse -Force | Where-Object { $_.Extension -eq '.sys' }
 # count the number of items in the list
 $numberOfFiles = $files2.Count
 # print statement 
@@ -96,6 +98,7 @@ Write-Host "Number of .sys files found: $numberOfFiles"
 ## HINT: Length property is in Bytes 500KB = 512000 Bytes
 ## HINT: 51 files returned. 
 
+# not working at 51
 # create a variable to store the list of ".sys" files larger than 500 KB
 $files3 = Get-ChildItem -Path "C:\Windows\System32\DriverStore" -File -Recurse | Where-Object { ($_.Extension -eq '.sys') -and ($_.Length -gt 512000) }
 # count the number of items in the list
@@ -136,5 +139,6 @@ $connection = Test-NetConnection -ComputerName ung.edu -Port 443 # -TimeoutMilli
 # print the $connection variable
 $connection
 
-# after I tried to test connection I got hit with attempting TCP connect waiting for response.
+# after I tried to test connection I got hit with attempting TCP connect waiting for response, and when i spam ctrl c to cancel out i receive information about the connection
+# and that it was a successful test
 #----------------------------------------------------------[Complete]-------------------------------------------------------------
