@@ -12,7 +12,7 @@
     Data Found
 .NOTES
     Version:        1.0
-    Author:         <Your Name>
+    Author:         <Jonathan D>
     Creation Date:  
     References: Select-String: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-string?view=powershell-6
          Write-Host: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/write-host?view=powershell-6
@@ -85,8 +85,11 @@ cd $Path                                                         #
 ## HINT: Class slides and lab examples from class may help.
 ## YOUR CODE BELOW HERE
 
+## create variable
+$findings = Select-String -Path .\Logs\* -Pattern "187.76.80.202"
 
-
+# output
+$findings
 
 # 2. Once complete, lets confirm the number of matches.
 ## A helper function called howMany has been provided to you.
@@ -94,23 +97,23 @@ cd $Path                                                         #
 ## HINT: Your returned count should be: 475
 ## YOUR CODE BELOW HERE
 
-
-
+# using function to count matches
+$matchCount = howMany $findings
 
 ## 3. To make it easier for searching in the future, lets build a function!
 ## The structure of the function has been provided below.
 ## Your job is to complete the function in areas that say "YOUR CODE BELOW HERE"
 ## Example of Function: logSearcher -dir "C:\Users\Student\Documents\*" -text "SAMPLE" -showLogs $True
 ## this will also work: logSearcher ".\Documents\*" "SAMPLE" $True
-function logSearcher($dir,$text,$showLogs)
-{
+
+function logSearcher($dir, $text, $showLogs) {
     ## Create a variable called $results to store your results
     ## Set $results equal to your Select-String statement similiar to #1.
     ## For your -Path paramter use $dir, and -Pattern use $text variable
     ## YOUR CODE BELOW HERE
 
-
-
+    $results = Select-String -Path $dir -Pattern $text
+    
     ## A ShowLogs parameter is used in this function. 
     ## This parameter is a boolean value ($true or $false) 
     ## When this parameter is $true, the output will show the results. 
@@ -118,16 +121,16 @@ function logSearcher($dir,$text,$showLogs)
     ## Write a simple if branch to check if $showLogs is equal to $True, 
     ## then the statement code to print the $results variable
     ## YOUR CODE BELOW HERE
-
-
+    if ($showLogs -eq $True) {
+        # Output the search results if $showLogs is true
+        $results
+    }
 
     ## Lastly, return the number of hits by using the helper function howMany to output the count of results.
     ## Remember "return" will pass the object outside of the function when it completes.
     ## YOUR CODE BELOW HERE
-  
-
+    return (howMany $results)
 }
-
 ## 4. Since we know the attacker's IP has hit some of our servers, let's test our new function out.
 ## A suspicious login from the attacker's IP is showing attempts from username "tonystark"
 ## - Create a variable $results1 and assign it the value of our logSearcher function with the arguments below.
@@ -139,8 +142,9 @@ function logSearcher($dir,$text,$showLogs)
 ## HINT: Number of findings should show 254
 ## YOUR CODE BELOW HERE
 
-
-
+# create variable and use logSearcher to search for "tonystark" in logs
+# Create a variable $results1 and assign it the value of our logSearcher function
+$results1 = logSearcher -dir ".\Logs\*" -text "tonystark" -showLogs $True
 
 ## 5. Notice any suspicious activity from the logs? Any files opened by the hacker?
 ## - Create a variable $results2 and assign it the value of our logSearcher function with the arguments below.
@@ -149,7 +153,8 @@ function logSearcher($dir,$text,$showLogs)
 ## Number of findings should show 5
 ## YOUR CODE BELOW HERE
 
-
+# create variable and use logSearcher to search
+$results2 = logSearcher ".\Logs\*" "csv" -showLogs $True
 
 ## 6. Yikes, let's find out if those files have any sensitive data. Instead of scanning the Logs folder
 ## Use logSearcher to search all files in the directory .\Data for Social Security Numbers.
@@ -159,9 +164,7 @@ function logSearcher($dir,$text,$showLogs)
 ## - HINT: Look at lecture slides or class lecture demos for examples on patterns.
 ## YOUR CODE BELOW HERE
 
-
-
-
+$ssnResults = logSearcher ".\Data\*" "\d{3}-\d{2}-\d{4}" -showLogs $True
 
 ## 7. Oh no, any Credit Card Numbers stolen? 
 ## Use logSearcher to search all files in the directory .\Data for Credit Card Numbers.
@@ -170,9 +173,8 @@ function logSearcher($dir,$text,$showLogs)
 ## - Credit Cards pattern will be in 16 digit format with no dashes(-). Example 1234123412341234
 ## YOUR CODE BELOW HERE
 
-
-
-
+# search for credit card numbers
+$ccResults = logSearcher ".\Data\*" "\d{16}" -showLogs $True
 
 ## 8. With a major data breach on our hands, we must inform the CEO the expected financial loss to the business.
 ## A helper function has been provided called incidentCost
@@ -182,7 +184,16 @@ function logSearcher($dir,$text,$showLogs)
 ## HINT: Estimated loss to the business is greater than $200K
 ## YOUR CODE BELOW HERE
 
+$ssnCount = $ssnResults.Count
+$ccCount = $ccResults.Count
 
+# calculate financial loss
+$expectedLoss = incidentCost -cc $ccCount -ssn $ssnCount
 
+# check if loss is more than 200k
+if ($expectedLoss -gt 200000) {
+    Write-Host "Expected financial loss to the business is greater than $ 200K."
+} else {
+    Write-Host "Expected financial loss to the business is not greater than $ 200K."
+}
 #----------------------------------------------------------[Complete]-------------------------------------------------------------
- 
