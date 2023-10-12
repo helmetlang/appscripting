@@ -1,5 +1,3 @@
-################## START OF CODE ##################
-
 function get-systemInfo()
 {
    $computerName = $env:COMPUTERNAME
@@ -13,5 +11,3 @@ function get-systemInfo()
 }
 
 get-systemInfo
-
-################## END OF CODE ##################
