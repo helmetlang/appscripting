@@ -17,6 +17,7 @@ echo "#1 Setting Constants"
 # 1. Create a variable called STUDENT_NAME and assign the value of your name for the report 
 # also and set the TARGET_IP to the *first* argument passed when the script is executed.
 # Create Varaiable HERE
+STUDENT_NAME="jonathan"
 
 
 TITLE="Security Report prepared for CSCI 1411 - Fall 2023"
